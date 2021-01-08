@@ -116,4 +116,4 @@ dist
 .pnp.*
 
 #Config database
-.src/Utils/database.js
+src/Utils/database.js
