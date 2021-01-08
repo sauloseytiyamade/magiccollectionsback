@@ -8,5 +8,7 @@ const UsersController = require('./controllers/UsersController')
 routes.get('/users', UsersController.Index)
 routes.get('/users/:email', UsersController.Show)
 routes.post('/users', UsersController.Create)
+routes.put('/users/:email', UsersController.Update)
+routes.delete('/users/:email', UsersController.Delete)
 
 module.exports = routes
