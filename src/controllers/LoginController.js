@@ -1,7 +1,7 @@
 const database = require('../utils/database')
 const cryptpass = require('../utils/cryptpass')
 const validator = require('validator')
-const scriptsTools = require('../utils/scriptsTools')
+const querysDatabase = require('../utils/querysDatabase')
 const generateWebToken = require('../utils/generateWebToken')
 const { isEmpty } = require('lodash')
 
@@ -14,7 +14,7 @@ module.exports = {
         //Verifica se este é um e-mail válido
         if(validator.isEmail(email)){            
             //Verifica no banco se existe este e-mail
-            scriptsTools.verifyEmail(email, 'users')
+            querysDatabase.verifyEmail(email, 'users')
                 .then(resp => {
                     if(isEmpty(resp)){
                         //Se não existir e-mail ele apresenta essa mensagem
@@ -43,7 +43,7 @@ module.exports = {
                                         generateWebToken.generate(JwtData)
                                             .then(resp => {
                                                 //Envia o token JWT com os dados
-                                                res.json({message: resp})
+                                                res.json(resp)
                                         })
                                         
                                     }
