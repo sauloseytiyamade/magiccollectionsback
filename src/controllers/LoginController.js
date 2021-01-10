@@ -18,7 +18,7 @@ module.exports = {
                 .then(resp => {
                     if(isEmpty(resp)){
                         //Se não existir e-mail ele apresenta essa mensagem
-                        res.json({message: 'user not found'})
+                        res.status(404).send({message: 'user not found'})
                     }else{
                         //Existe e-mail no banco de dados
                         //Busca a senha no banco de dados
@@ -28,7 +28,7 @@ module.exports = {
                                 .then(resp => {
                                     if(!resp){
                                         //Se não bater apresenta essa mensagem
-                                        res.json({message: 'user or password invalid'})
+                                        res.status(401).send({message: 'user or password invalid'})
                                     }else{
                                         //Se bater monta o objeto JWT
                                         const JwtData = {
@@ -43,7 +43,7 @@ module.exports = {
                                         generateWebToken.generate(JwtData)
                                             .then(resp => {
                                                 //Envia o token JWT com os dados
-                                                res.json(resp)
+                                                res.status(200).send(resp)
                                         })
                                         
                                     }
@@ -54,7 +54,7 @@ module.exports = {
                     }
                 })
         }else{
-            res.json({message: 'invalid email'})
+            res.status(404).send({message: 'invalid email'})
         }
         
     }

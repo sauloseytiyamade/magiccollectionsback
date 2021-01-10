@@ -1,4 +1,3 @@
-const express = require('express')
 const database = require('../utils/database')
 const moment = require('moment')
 const cryptpass = require('../utils/cryptpass')
@@ -11,7 +10,7 @@ module.exports = {
         database.select().table('users').then(data => {
             res.json(data)
         }).catch(err => {
-            res.json(err)
+            res.status(400).send(err)
         })
     },
 
@@ -21,12 +20,12 @@ module.exports = {
         // valida e-mail
         if(validator.isEmail(email)){
             database.select().where({email}).table('users').then(data => {
-                res.json(data)
+                res.status(200).send({data})
             }).catch(err => {
-                res.json(err)
+                res.status(400).send(err)
             })
         }else{
-            res.json({message: 'invalid email'})
+            res.status(403).send({message: 'invalid email'})
         }
         
     },
@@ -50,12 +49,12 @@ module.exports = {
                 querysDatabase.verifyEmail(body.email, 'users')
                     .then(resp => {
                         if(resp.length >= 1){
-                            res.json({message: 'user exist'})
+                            res.status(409).send({message: 'user exist'})
                         }else{
                             database.insert(body).into('users').then(data => {
-                                res.json({message: 'user created'})
+                                res.status(201).send({message: 'user created', id: data[0]})
                             }).catch(err => {
-                                res.json(err)
+                                res.status(400).send(err)
                             })
                         }
                     })
@@ -63,7 +62,7 @@ module.exports = {
             })
 
         }else{
-            res.json({message: 'invalid email'})
+            res.status(404).send({message: 'invalid email'})
         }
 
         // Encripta o password utilizando bcrypt
@@ -71,6 +70,7 @@ module.exports = {
 
     Update(req, res){
         const body = req.body
+        body['updated_at'] = moment().format('YYYY-MM-DD hh:mm:ss')
         const { email } = req.params
 
         // valida e-mail
@@ -80,17 +80,17 @@ module.exports = {
             querysDatabase.verifyEmail(email, 'users')
                 .then(resp => {
                     if(resp.length == 0){
-                        res.json({message: 'user not exist'})
+                        res.status(404).send({message: 'invalid email'})
                     }else{
                         database.where({email}).update(body).table('users').then(data => {
-                            res.json({message: 'user updated'})
+                            res.status(200).send({message: 'user updated'})
                         }).catch(err => {
-                            res.json(err)
+                            res.status(400).send(err)
                         })
                     }
                 })
         }else{
-            res.json({message: 'invalid email'})
+            res.status(404).send({message: 'invalid email'})
         }
 
     },
@@ -103,7 +103,7 @@ module.exports = {
             querysDatabase.verifyEmail(email, 'users')
             .then(resp => {
                 if(resp.length == 0){
-                    res.json({message: 'user not exist'})
+                    res.status(404).send({message: 'user not exist'})
                 }else{
                     //Verifica na coleção se não existe nenhum card vinculado a este usuário
                     querysDatabase.verifyCardsPeerUser(resp[0].id)
@@ -118,24 +118,24 @@ module.exports = {
                                         if(data == 1){
                                             //Exclusão do usuário
                                             database.where({email}).delete().table('users').then(data => {
-                                                res.json({message: 'user deleted'})
+                                                res.status(200).send({message: 'user deleted'})
                                             }).catch(err => {
-                                                res.json(err)
+                                                res.status(400).send(err)
                                             })
                                         }else{
                                             //Caso a exclusão não dê certo, aparece esta mensagem
-                                            res.json({message: 'not exclude cards'})
+                                            res.status(404).send({message: 'not exclude cards'})
                                         }
                                     }).catch(err => {
-                                        res.json(err)
+                                        res.status(400).send(err)
                                     })
                                 })
                             }else{
                                 //Caso não haja nenhum card é só excluir o usuário vinculado
                                 database.where({email}).delete().table('users').then(data => {
-                                    res.json({message: 'user deleted'})
+                                    res.status(200).send({message: 'user deleted'})
                                 }).catch(err => {
-                                    res.json(err)
+                                    res.status(400).send(err)
                                 })
                             }
                         })
