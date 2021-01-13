@@ -2,102 +2,114 @@ const express = require('express')
 const routes = express.Router()
 
 // Importando os controllers
-const UsersController = require('./controllers/UsersController')
-const LoginController = require('./controllers/LoginController')
-const CardColorController = require('./controllers/CardColorController')
-const CardEditionController = require('./controllers/CardEdtionController')
-const CardLanguageController = require('./controllers/CardLanguageController')
-const CardQualityController = require('./controllers/CardQualityController')
-const CardRarityController = require('./controllers/CardRarityController')
-const CardTypeController = require('./controllers/CardTypeController')
+const usersController = require('./controllers/usersController')
+const loginController = require('./controllers/loginController')
+const cardColorController = require('./controllers/cardColorController')
+const cardEditionController = require('./controllers/cardEdtionController')
+const cardLanguageController = require('./controllers/cardLanguageController')
+const cardQualityController = require('./controllers/cardQualityController')
+const cardRarityController = require('./controllers/cardRarityController')
+const cardTypeController = require('./controllers/cardTypeController')
+const cardsController = require('./controllers/cardsController')
 
 // Rotas relacionadas a tabela usuários
 
 //Retorna todos os usuários
-routes.get('/users', UsersController.Index)
+routes.get('/users', usersController.Index)
 //Retorna determinado usuário por email
-routes.get('/users/:email', UsersController.Show)
+routes.get('/users/:email', usersController.Show)
 //Cria um usuário
-routes.post('/users', UsersController.Create)
+routes.post('/users', usersController.Create)
 //Altera as informações do usuário. {name, email, permission}
-routes.put('/users/:email', UsersController.Update)
+routes.put('/users/:email', usersController.Update)
 //Delete um usuário
-routes.delete('/users/:email', UsersController.Delete)
+routes.delete('/users/:email', usersController.Delete)
 
 //Rotas relacionadas a Login
-routes.post('/login', LoginController.Login)
+routes.post('/login', loginController.Login)
 
 //Rotas relacinadas a tabela cardColors
 
 //Retorna todos os cardColors
-routes.get('/cardcolor', CardColorController.Index)
+routes.get('/cardcolor', cardColorController.Index)
 //Retorna determinado cardColor
-routes.get('/cardcolor/:id', CardColorController.Show)
+routes.get('/cardcolor/:id', cardColorController.Show)
 //Cria um cardColor
-routes.post('/cardcolor', CardColorController.Create)
+routes.post('/cardcolor', cardColorController.Create)
 //Altera um cardColor
-routes.put('/cardcolor/:id', CardColorController.Update)
+routes.put('/cardcolor/:id', cardColorController.Update)
 //Deleta um cardColor
-routes.delete('/cardcolor/:id', CardColorController.Delete)
+routes.delete('/cardcolor/:id', cardColorController.Delete)
 
 //Rotas relacinadas a tabela cardEdition
 
 //Retorna todos os cardColors
-routes.get('/cardedition', CardEditionController.Index)
+routes.get('/cardedition', cardEditionController.Index)
 //Retorna determinado cardColor
-routes.get('/cardedition/:id', CardEditionController.Show)
+routes.get('/cardedition/:id', cardEditionController.Show)
 //Cria um cardColor
-routes.post('/cardedition', CardEditionController.Create)
+routes.post('/cardedition', cardEditionController.Create)
 //Altera um cardColor
-routes.put('/cardedition/:id', CardEditionController.Update)
+routes.put('/cardedition/:id', cardEditionController.Update)
 //Deleta um cardColor
-routes.delete('/cardedition/:id', CardEditionController.Delete)
+routes.delete('/cardedition/:id', cardEditionController.Delete)
 
 //Retorna todos os cardLanguage
-routes.get('/cardlanguage', CardLanguageController.Index)
+routes.get('/cardlanguage', cardLanguageController.Index)
 //Retorna determinado cardLanguage
-routes.get('/cardlanguage/:id', CardLanguageController.Show)
+routes.get('/cardlanguage/:id', cardLanguageController.Show)
 //Cria um cardLanguage
-routes.post('/cardlanguage', CardLanguageController.Create)
+routes.post('/cardlanguage', cardLanguageController.Create)
 //Altera um cardLanguage
-routes.put('/cardlanguage/:id', CardLanguageController.Update)
+routes.put('/cardlanguage/:id', cardLanguageController.Update)
 //Deleta um cardLanguage
-routes.delete('/cardlanguage/:id', CardLanguageController.Delete)
+routes.delete('/cardlanguage/:id', cardLanguageController.Delete)
 
 
 //Retorna todos os cardQuality
-routes.get('/cardquality', CardQualityController.Index)
+routes.get('/cardquality', cardQualityController.Index)
 //Retorna determinado cardQuality
-routes.get('/cardquality/:id', CardQualityController.Show)
+routes.get('/cardquality/:id', cardQualityController.Show)
 //Cria um cardQuality
-routes.post('/cardquality', CardQualityController.Create)
+routes.post('/cardquality', cardQualityController.Create)
 //Altera um cardQuality
-routes.put('/cardquality/:id', CardQualityController.Update)
+routes.put('/cardquality/:id', cardQualityController.Update)
 //Deleta um cardQuality
-routes.delete('/cardquality/:id', CardQualityController.Delete)
+routes.delete('/cardquality/:id', cardQualityController.Delete)
 
 
 //Retorna todos os cardRarity
-routes.get('/cardrarity', CardRarityController.Index)
+routes.get('/cardrarity', cardRarityController.Index)
 //Retorna determinado cardRarity
-routes.get('/cardrarity/:id', CardRarityController.Show)
+routes.get('/cardrarity/:id', cardRarityController.Show)
 //Cria um cardRarity
-routes.post('/cardrarity', CardRarityController.Create)
+routes.post('/cardrarity', cardRarityController.Create)
 //Altera um cardRarity
-routes.put('/cardrarity/:id', CardRarityController.Update)
+routes.put('/cardrarity/:id', cardRarityController.Update)
 //Deleta um cardRarity
-routes.delete('/cardrarity/:id', CardRarityController.Delete)
+routes.delete('/cardrarity/:id', cardRarityController.Delete)
 
 //Retorna todos os cardType
-routes.get('/cardtype', CardTypeController.Index)
+routes.get('/cardtype', cardTypeController.Index)
 //Retorna determinado cardType
-routes.get('/cardtype/:id', CardTypeController.Show)
+routes.get('/cardtype/:id', cardTypeController.Show)
 //Cria um cardType
-routes.post('/cardtype', CardTypeController.Create)
+routes.post('/cardtype', cardTypeController.Create)
 //Altera um cardType
-routes.put('/cardtype/:id', CardTypeController.Update)
+routes.put('/cardtype/:id', cardTypeController.Update)
 //Deleta um cardType
-routes.delete('/cardtype/:id', CardTypeController.Delete)
+routes.delete('/cardtype/:id', cardTypeController.Delete)
+
+//Retorna todos os cards
+routes.get('/cards', cardsController.Index)
+//Retorna determinado cards
+routes.get('/cards/:id', cardsController.Show)
+//Cria um cards
+routes.post('/cards', cardsController.Create)
+//Altera um cards
+routes.put('/cards/:id', cardsController.Update)
+//Deleta um cards
+routes.delete('/cards/:id', cardsController.Delete)
 
 
 module.exports = routes

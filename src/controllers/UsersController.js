@@ -16,11 +16,20 @@ module.exports = {
 
     Show(req,res){
         const {email} = req.params
+        const token = ''
         
         // valida e-mail
         if(validator.isEmail(email)){
             database.select().where({email}).table('users').then(data => {
-                res.status(200).send({data})
+                if(data.length == 0){
+                    res.status(200).send({message: false})
+                }else{
+                    if(token){
+                        res.status(200).send({data})
+                    }else{
+                        res.status(200).send({message: true})
+                    }
+                }
             }).catch(err => {
                 res.status(400).send(err)
             })
