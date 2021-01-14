@@ -57,9 +57,19 @@ module.exports = {
             if(color.length == 0){
                 res.status(404).send({message: 'color id not exist'})
             }else{
-                //Caso o id exista atualiza o registro no banco de dados utilizando o id
-                database.where({id}).update(body).table('cardcolor').then(color => {
-                    res.status(200).send({message: 'color updated'})
+                database.select('color').where({color: body.color}).table('cardcolor').then(color =>{
+                    //Verifica se existe algum registro com este nome
+                    if(color.length == 0){
+                        //Caso não exista atualiza o registros
+                        database.where({id}).update(body).table('cardcolor').then(color => {
+                            res.status(200).send({message: 'color updated'})
+                        })
+                    }else{
+                        //Caso exista apresenta que o registro já existe
+                        res.status(409).send({message: 'color exist'})                
+                    }
+                }).catch(err => {
+                    res.status(400).send(err)
                 })
             }
         })

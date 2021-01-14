@@ -57,9 +57,19 @@ module.exports = {
             if(edition.length == 0){
                 res.status(404).send({message: 'edition id not exist'})
             }else{
-                //Caso o id exista atualiza o registro no banco de dados utilizando o id
-                database.where({id}).update(body).table('cardedition').then(edition => {
-                    res.status(200).send({message: 'edition updated'})
+                database.select('edition').where({edition: body.edition}).table('cardedition').then(edition =>{
+                    //Verifica se existe algum registro com este nome
+                    if(edition.length == 0){
+                        //Caso não exista atualiza o registros
+                        database.where({id}).update(body).table('cardedition').then(edition => {
+                            res.status(200).send({message: 'edition updated'})
+                        }).catch(err => {
+                            res.status(400).send(err)
+                        })
+                    }else{
+                        //Caso exista apresenta que o registro já existe
+                        res.status(409).send({message: 'edition exist'})                
+                    }
                 }).catch(err => {
                     res.status(400).send(err)
                 })

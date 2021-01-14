@@ -57,9 +57,19 @@ module.exports = {
             if(quality.length == 0){
                 res.status(404).send({message: 'quality id not exist'})
             }else{
-               //Atualiza o registro no banco de dados utilizando o id
-                database.where({id}).update(body).table('cardquality').then(quality => {
-                    res.status(200).send({message: 'quality updated'})
+                database.select('quality').where({quality: body.quality}).table('cardquality').then(quality =>{
+                    //Verifica se existe algum registro com este nome
+                    if(quality.length == 0){
+                        //Caso não exista atualiza o registros
+                        database.where({id}).update(body).table('cardquality').then(quality => {
+                            res.status(200).send({message: 'quality updated'})
+                        }).catch(err => {
+                            res.status(400).send(err)
+                        })
+                    }else{
+                        //Caso exista apresenta que o registro já existe
+                        res.status(409).send({message: 'quality exist'})                
+                    }
                 }).catch(err => {
                     res.status(400).send(err)
                 })

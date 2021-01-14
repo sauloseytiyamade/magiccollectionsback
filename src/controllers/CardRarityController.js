@@ -57,9 +57,19 @@ module.exports = {
             if(rarity.length == 0){
                 res.status(404).send({message: 'rarity id not exist'})
             }else{
-               //Atualiza o registro no banco de dados utilizando o id
-                database.where({id}).update(body).table('cardrarity').then(rarity => {
-                    res.status(200).send({message: 'rarity updated'})
+                database.select('rarity').where({rarity: body.rarity}).table('cardrarity').then(rarity =>{
+                    //Verifica se existe algum registro com este nome
+                    if(rarity.length == 0){
+                        //Caso não exista atualiza o registros
+                        database.where({id}).update(body).table('cardrarity').then(rarity => {
+                            res.status(200).send({message: 'rarity updated'})
+                        }).catch(err => {
+                            res.status(400).send(err)
+                        })
+                    }else{
+                        //Caso exista apresenta que o registro já existe
+                        res.status(409).send({message: 'rarity exist'})                
+                    }
                 }).catch(err => {
                     res.status(400).send(err)
                 })

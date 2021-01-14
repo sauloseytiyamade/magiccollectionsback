@@ -57,9 +57,19 @@ module.exports = {
             if(language.length == 0){
                 res.status(404).send({message: 'language id not exist'})
             }else{
-               //Atualiza o registro no banco de dados utilizando o id
-                database.where({id}).update(body).table('cardlanguage').then(language => {
-                    res.status(200).send({message: 'language updated'})
+                database.select('language').where({language: body.language}).table('cardlanguage').then(language =>{
+                    //Verifica se existe algum registro com este nome
+                    if(language.length == 0){
+                        //Caso não exista atualiza o registros
+                        database.where({id}).update(body).table('cardlanguage').then(language => {
+                            res.status(200).send({message: 'language updated'})
+                        }).catch(err => {
+                            res.status(400).send(err)
+                        })
+                    }else{
+                        //Caso exista apresenta que o registro já existe
+                        res.status(409).send({message: 'language exist'})                
+                    }
                 }).catch(err => {
                     res.status(400).send(err)
                 })

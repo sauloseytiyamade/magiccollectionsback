@@ -57,9 +57,19 @@ module.exports = {
             if(type.length == 0){
                 res.status(404).send({message: 'type id not exist'})
             }else{
-               //Atualiza o registro no banco de dados utilizando o id
-                database.where({id}).update(body).table('cardtype').then(type => {
-                    res.status(200).send({message: 'type updated'})
+                database.select('type').where({type: body.type}).table('cardtype').then(type =>{
+                    //Verifica se existe algum registro com este nome
+                    if(type.length == 0){
+                        //Caso não exista atualiza o registros
+                        database.where({id}).update(body).table('cardtype').then(type => {
+                            res.status(200).send({message: 'type updated'})
+                        }).catch(err => {
+                            res.status(400).send(err)
+                        })
+                    }else{
+                        //Caso exista apresenta que o registro já existe
+                        res.status(409).send({message: 'type exist'})                
+                    }
                 }).catch(err => {
                     res.status(400).send(err)
                 })
