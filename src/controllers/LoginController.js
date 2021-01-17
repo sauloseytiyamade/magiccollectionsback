@@ -22,7 +22,7 @@ module.exports = {
                     }else{
                         //Existe e-mail no banco de dados
                         //Busca a senha no banco de dados
-                        database.select('name', 'email', 'password', 'permission').where({email}).table('users').then(dbpass => {
+                        database.select('id', 'name', 'email', 'password').where({email}).table('users').then(dbpass => {
                             //Verifica se a senha informada bate com a senha do banco
                             cryptpass.compare(password,dbpass[0].password)
                                 .then(resp => {
@@ -31,11 +31,12 @@ module.exports = {
                                         res.status(401).send({message: 'user or password invalid'})
                                     }else{
                                         //Se bater monta o objeto JWT
+                                        console.log(dbpass[0]);
                                         const JwtData = {
                                             iss: 'magic collections',
+                                            id: dbpass[0].id,
                                             name: dbpass[0].name,
                                             mail: dbpass[0].email,
-                                            permission: dbpass[0].permission,
                                             exp: Math.floor(Date.now() / 1000) + 32400,
                                         }
 
