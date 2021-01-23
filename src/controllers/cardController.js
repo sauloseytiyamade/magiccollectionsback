@@ -4,8 +4,26 @@ const moment = require('moment')
 module.exports = {
     Index(req, res){        
         //Exibe todos os registros da tabela
-        database.select().table('cards').then(card => {
-            res.status(200).send({card})
+        database.select(
+            'cds.id as id',
+            'cds.cardName as card_name',
+            'cdc.color as card_color',
+            'cdc.id as color_id',
+            'cde.id as edition_id',
+            'cde.edition as edition',
+            'cde.code as edition_code',
+            'cdr.id as rarity_id',
+            'cdr.rarity as rarity',
+            'cdt.id as type_id',
+            'cdt.type as card_type'
+        )
+        .from('cards as cds')
+        .innerJoin('cardcolor as cdc', 'cds.cardColor_id', 'cdc.id')
+        .innerJoin('cardedition as cde', 'cds.cardEdition_id', 'cde.id')
+        .innerJoin('cardrarity as cdr', 'cds.cardRarity_id', 'cdr.id')
+        .innerJoin('cardtype as cdt', 'cds.cardType_id', 'cdt.id')
+        .then(resp => {
+            res.json(resp)
         }).catch(err => {
             res.status(400).send(err)
         })

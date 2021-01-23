@@ -61,7 +61,7 @@ module.exports = {
             'cdr.rarity as rarity',
             'cdq.id as quality_id',
             'cdq.quality as quality',
-            'cdl.id as id_language',
+            'cdl.id as language_id',
             'cdl.language as language',
             'c.quantity as quantity'
         )
@@ -114,19 +114,9 @@ module.exports = {
             if(collection.length == 0){
                 res.status(404).send({message: 'card collection not exist'})
             }else{
-                database.select().where({user_id, cards_id}).table('collection').then(collection => {
-                    //Verifica se o usuário já não tem a mesma carta na coleção
-                    if(collection.length >= 1){
-                        //Se tiver a mesma carta é exibida a mensagem
-                        res.status(409).send({message: 'card exist collection'})
-                    }else{
-                        //Caso contrário altera o registro
-                        database.where({id}).update(body).table('collection').then(collection => {
-                            res.status(200).send({message: 'card collection updated'})
-                        }).catch(err => {
-                            res.status(400).send(err)
-                        })
-                    }
+                //Atualiza os dados do registro
+                database.where({id}).update(body).table('collection').then(collection => {
+                    res.status(200).send({message: 'card collection updated'})
                 }).catch(err => {
                     res.status(400).send(err)
                 })
