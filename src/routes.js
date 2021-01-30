@@ -125,15 +125,15 @@ routes.put('/cards/:id', cardController.Update)
 routes.delete('/cards/:id', cardController.Delete)
 
 //Retorna todos os cards da coleção
-routes.get('/collections', collectionController.Index)
+routes.get('/collections', Authorization, collectionController.Index)
 //Retorna determinado card da coleção
-routes.get('/collections/:id', collectionController.Show)
+routes.get('/collections/:id', Authorization, collectionController.Show)
 //Cria um cards na coleção
-routes.post('/collections', collectionController.Create)
+routes.post('/collections', Authorization, collectionController.Create)
 //Altera um cards na coleção
-routes.put('/collections/:id', collectionController.Update)
+routes.put('/collections/:id', Authorization,  collectionController.Update)
 //Deleta um cards na coleção
-routes.delete('/collections/:id', collectionController.Delete)
+routes.delete('/collections/:id', Authorization, collectionController.Delete)
 
 
 module.exports = routes

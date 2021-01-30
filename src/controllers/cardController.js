@@ -47,14 +47,11 @@ module.exports = {
         body['updated_at'] = moment().format('YYYY-MM-DD HH:mm:ss')
 
 
-        database.select('cardName').where({cardName}).table('cards').then(card => {
-            //Verifica se existe algum registro com este nome
+        database.select('cardName').where({'cardName': cardName, 'cardEdition_id': cardEdition_id}).table('cards').then(card => {
+            //Verifica se existe algum registro com este nome e edição            
             if(card.length >= 1){
-                //Verifica se existe algum registro com esta edição
-                database.select('cardEdition_id').where({cardEdition_id}).table('cards').then(card => {
-                    //Caso exista apresenta o erro
-                    res.status(409).send({message: 'card exist'})
-                })
+                //Caso exista apresenta o erro
+                res.status(409).send({message: 'card exist'})
             }else{
                 //Caso não exista cria o registro
                 database.insert(body).into('cards').then(card => {
@@ -78,22 +75,13 @@ module.exports = {
             if(card.length == 0){
                 res.status(404).send({message: 'card not exist'})
             }else{
-                database.select('cardName').where({cardName}).table('cards').then(card => {
-                    //Verifica se existe algum registro com este nome
-                    if(card.length >= 1){
-                        //Verifica se existe algum registro com esta edição
-                        database.select('cardEdition_id').where({cardEdition_id}).table('cards').then(card => {
-                            //Caso exista apresenta o erro
-                            res.status(409).send({message: 'card exist'})
-                        })
-                    }else{
-                        //Caso o id exista atualiza o registro no banco de dados utilizando o id
-                        database.where({id}).update(body).table('cards').then(card => {
-                            res.status(200).send({message: 'card updated'})
-                        }).catch(err => {
-                            res.status(400).send(err)
-                        }) 
-                    }
+                database.select('cardName').where({'cardName': cardName, 'cardEdition_id': cardEdition_id}).table('cards').then(card => {
+                    //Atualiza o registro no banco de dados utilizando o id
+                    database.where({id}).update(body).table('cards').then(card => {
+                        res.status(200).send({message: 'card updated'})
+                    }).catch(err => {
+                        res.status(400).send(err)
+                    }) 
                 })
             }
         })
@@ -110,7 +98,7 @@ module.exports = {
             }else{
                //Caso exista deleta o registro no banco de dados utilizando o id
                 database.where({id}).delete().table('cards').then(cards => {
-                    res.status(200).send({message: 'cards deleted'})
+                    res.status(200).send({message: 'card deleted'})
                 }).catch(err => {
                     res.status(400).send(err)
                 })
