@@ -12,7 +12,16 @@ const cardRarityController = require('./controllers/cardRarityController')
 const cardTypeController = require('./controllers/cardTypeController')
 const cardController = require('./controllers/cardController')
 const collectionController = require('./controllers/collectionController')
+const uploadController = require('./controllers/uploadsController')
+
+
+// Middlewares
 const Authorization = require('./middlewares/auth')
+const fileUpload = require('./middlewares/fileUpload')
+
+//Rotas relacionadas arquivos estáticos
+routes.use(express.static('public'))
+
 
 // Rotas relacionadas a tabela usuários
 
@@ -134,6 +143,10 @@ routes.post('/collections', Authorization, collectionController.Create)
 routes.put('/collections/:id', Authorization,  collectionController.Update)
 //Deleta um cards na coleção
 routes.delete('/collections/:id', Authorization, collectionController.Delete)
+
+//Rotas relacionadas a uploads
+
+routes.post('/upload', fileUpload.single('img'), uploadController.store)
 
 
 module.exports = routes
