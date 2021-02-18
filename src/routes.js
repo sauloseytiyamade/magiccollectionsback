@@ -18,6 +18,7 @@ const uploadController = require('./controllers/uploadsController')
 // Middlewares
 const Authorization = require('./middlewares/auth')
 const fileUpload = require('./middlewares/fileUpload')
+const resizeFile = require('./middlewares/resizeFile')
 
 //Rotas relacionadas arquivos estáticos
 routes.use(express.static('public'))
@@ -146,7 +147,7 @@ routes.delete('/collections/:id', Authorization, collectionController.Delete)
 
 //Rotas relacionadas a uploads
 
-routes.post('/upload', fileUpload.single('img'), uploadController.store)
+routes.post('/upload', fileUpload.single('img'), resizeFile, uploadController.store)
 
 
 module.exports = routes

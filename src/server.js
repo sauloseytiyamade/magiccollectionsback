@@ -19,6 +19,6 @@ app.use(morgan('combined'))
 app.use(routes)
 
 app.listen(PORT, () => {
-    console.log(`Server running ${PORT}`)
+    console.log(`server running ${PORT}`)
 })
 

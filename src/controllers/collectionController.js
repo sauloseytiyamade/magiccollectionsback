@@ -1,5 +1,6 @@
 const database = require('../utils/database')
 const moment = require('moment')
+const jwt = require('jsonwebtoken')
 
 module.exports = {
     Index(req, res){ 
@@ -88,6 +89,10 @@ module.exports = {
         body['created_at'] = moment().format('YYYY-MM-DD HH:mm:ss')
         body['updated_at'] = moment().format('YYYY-MM-DD HH:mm:ss')
 
+        const authorizationCode = req.headers.authorization
+        const token = authorizationCode.split(' ')[1]
+        const user = jwt.decode(token)
+
         database.select().where({user_id, cards_id}).table('collection').then(collection => {
             //Verifica se o usuário já não tem a mesma carta na coleção
             if(collection.length >= 1){
@@ -96,6 +101,16 @@ module.exports = {
             }else{
                 //Caso contrário é inserido um registro na tabela
                 database.insert(body).into('collection').then(collection => {
+                    //Grava log
+                    const objLog = {
+                        user: user.mail,
+                        logType: 'Create',
+                        lineTableId: parseInt(collection[0]),
+                        tableName: 'collection',
+                        lastValue: JSON.stringify(body),
+                        dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                    }
+                    database.insert(objLog).into('logs').then()
                     res.status(201).send({message: 'card collection created', id: collection[0]})
                 })
             }
@@ -109,11 +124,30 @@ module.exports = {
         const body = req.body
         const {user_id, cards_id} = req.body
         body['updated_at'] = moment().format('YYYY-MM-DD HH:mm:ss')
+
+        const authorizationCode = req.headers.authorization
+        const token = authorizationCode.split(' ')[1]
+        const user = jwt.decode(token)
+
+
         database.select('id').where({id}).table('collection').then(collection => {
             //Caso o id não exista
             if(collection.length == 0){
                 res.status(404).send({message: 'card collection not exist'})
             }else{
+                // Grava log
+                database.select().where({id}).table('collection').then(collection => {
+                    const objLog = {
+                        user: user.mail,
+                        logType: 'Update',
+                        lineTableId: parseInt(collection[0].id),
+                        tableName: 'collection',
+                        lastValue: JSON.stringify(collection[0]),
+                        dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                    }
+                    database.insert(objLog).into('logs').then()
+                })
+
                 //Atualiza os dados do registro
                 database.where({id}).update(body).table('collection').then(collection => {
                     res.status(200).send({message: 'card collection updated'})
@@ -130,12 +164,28 @@ module.exports = {
 
     Delete(req, res){
         const {id} = req.params
+        const authorizationCode = req.headers.authorization
+        const token = authorizationCode.split(' ')[1]
+        const user = jwt.decode(token)
+        
         //Verifica se o id no banco de dados existe
         database.select('id').where({id}).table('collection').then(collection => {
             //Caso o id não exista
             if(collection.length == 0){
                 res.status(404).send({message: 'card collection id not exist'})
             }else{
+                //Grava log
+                database.select().where({id}).table('collection').then(collection => {
+                    const objLog = {
+                        user: user.mail,
+                        logType: 'Delete',
+                        lineTableId: parseInt(collection[0].id),
+                        tableName: 'collection',
+                        lastValue: JSON.stringify(collection[0]),
+                        dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                    }
+                    database.insert(objLog).into('logs').then()
+                })
                //Caso exista deleta o registro no banco de dados utilizando o id
                 database.where({id}).delete().table('collection').then(collection => {
                     res.status(200).send({message: 'card collection deleted'})

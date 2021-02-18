@@ -31,7 +31,6 @@ module.exports = {
                                         res.status(401).send({message: 'user or password invalid'})
                                     }else{
                                         //Se bater monta o objeto JWT
-                                        console.log(dbpass[0]);
                                         const JwtData = {
                                             iss: 'magic collections',
                                             id: dbpass[0].id,

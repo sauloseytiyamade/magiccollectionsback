@@ -57,7 +57,7 @@ module.exports = {
             if(edition.length == 0){
                 res.status(404).send({message: 'edition id not exist'})
             }else{
-                database.select('edition').where({edition: body.edition}).table('cardedition').then(edition =>{
+                database.select('edition').where({edition: body.edition, code:body.code}).table('cardedition').then(edition =>{
                     //Verifica se existe algum registro com este nome
                     if(edition.length == 0){
                         //Caso não exista atualiza o registros
