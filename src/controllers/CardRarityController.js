@@ -40,6 +40,16 @@ module.exports = {
                 if(rarity.length == 0){
                     //Caso não exista cria o registro
                     database.insert(body).into('cardrarity').then(rarity => {
+                        //Grava log
+                        const objLog = {
+                            user: user.mail,
+                            logType: 'Create',
+                            lineTableId: parseInt(rarity[0]),
+                            tableName: 'cardRarity',
+                            lastValue: JSON.stringify(body),
+                            dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        database.insert(objLog).into('logs').then()
                         res.status(201).send({message: 'rarity created', id: rarity[0]})
                     }).catch(err => {
                         res.status(400).send(err)
@@ -77,6 +87,18 @@ module.exports = {
                     database.select('rarity').where({rarity: body.rarity}).table('cardrarity').then(rarity =>{
                         //Verifica se existe algum registro com este nome
                         if(rarity.length == 0){
+                            // Grava log
+                            database.select().where({id}).table('cardrarity').then(card => {
+                                const objLog = {
+                                    user: user.mail,
+                                    logType: 'Update',
+                                    lineTableId: parseInt(card[0].id),
+                                    tableName: 'cardRarity',
+                                    lastValue: JSON.stringify(card[0]),
+                                    dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                                }
+                                database.insert(objLog).into('logs').then()
+                            })
                             //Caso não exista atualiza o registros
                             database.where({id}).update(body).table('cardrarity').then(rarity => {
                                 res.status(200).send({message: 'rarity updated'})
@@ -114,7 +136,19 @@ module.exports = {
                 if(rarity.length == 0){
                     res.status(404).send({message: 'rarity id not exist'})
                 }else{
-                //Caso exista deleta o registro no banco de dados utilizando o id
+                    // Grava log
+                    database.select().where({id}).table('cardrarity').then(card => {
+                        const objLog = {
+                            user: user.mail,
+                            logType: 'Delete',
+                            lineTableId: parseInt(card[0].id),
+                            tableName: 'cardRarity',
+                            lastValue: JSON.stringify(card[0]),
+                            dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        database.insert(objLog).into('logs').then()
+                    })
+                    //Caso exista deleta o registro no banco de dados utilizando o id
                     database.where({id}).delete().table('cardrarity').then(rarity => {
                         res.status(200).send({message: 'rarity deleted'})
                     }).catch(err => {

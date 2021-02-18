@@ -65,7 +65,7 @@ module.exports = {
                         user: user.mail,
                         logType: 'Create',
                         lineTableId: parseInt(card[0]),
-                        tableName: 'cardController',
+                        tableName: 'cards',
                         lastValue: JSON.stringify(body),
                         dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
                     }
@@ -100,7 +100,7 @@ module.exports = {
                         user: user.mail,
                         logType: 'Update',
                         lineTableId: parseInt(card[0].id),
-                        tableName: 'cardController',
+                        tableName: 'cards',
                         lastValue: JSON.stringify(card[0]),
                         dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
                     }
@@ -136,7 +136,7 @@ module.exports = {
                         user: user.mail,
                         logType: 'Delete',
                         lineTableId: parseInt(card[0].id),
-                        tableName: 'cardController',
+                        tableName: 'cards',
                         lastValue: JSON.stringify(card[0]),
                         dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
                     }

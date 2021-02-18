@@ -38,6 +38,16 @@ module.exports = {
                 if(color.length == 0){
                     //Caso não exista cria o registro
                     database.insert(body).into('cardcolor').then(color => {
+                         //Grava log
+                        const objLog = {
+                            user: user.mail,
+                            logType: 'Create',
+                            lineTableId: parseInt(color[0]),
+                            tableName: 'cardColor',
+                            lastValue: JSON.stringify(body),
+                            dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        database.insert(objLog).into('logs').then()
                         res.status(201).send({message: 'color created', id: color[0]})
                     }).catch(err => {
                         res.status(400).send(err)
@@ -74,6 +84,18 @@ module.exports = {
                     database.select('color').where({color: body.color}).table('cardcolor').then(color =>{
                         //Verifica se existe algum registro com este nome
                         if(color.length == 0){
+                            // Grava log
+                            database.select().where({id}).table('cardcolor').then(card => {
+                                const objLog = {
+                                    user: user.mail,
+                                    logType: 'Update',
+                                    lineTableId: parseInt(card[0].id),
+                                    tableName: 'cardColor',
+                                    lastValue: JSON.stringify(card[0]),
+                                    dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                                }
+                                database.insert(objLog).into('logs').then()
+                            })
                             //Caso não exista atualiza o registros
                             database.where({id}).update(body).table('cardcolor').then(color => {
                                 res.status(200).send({message: 'color updated'})
@@ -108,6 +130,18 @@ module.exports = {
                 if(color.length == 0){
                     res.status(404).send({message: 'color id not exist'})
                 }else{
+                    // Grava log
+                    database.select().where({id}).table('cardcolor').then(card => {
+                        const objLog = {
+                            user: user.mail,
+                            logType: 'Delete',
+                            lineTableId: parseInt(card[0].id),
+                            tableName: 'cardColor',
+                            lastValue: JSON.stringify(card[0]),
+                            dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        database.insert(objLog).into('logs').then()
+                    })
                     // Caso o id exista deleta o registro no banco de dados utilizando o id
                     database.where({id}).delete().table('cardcolor').then(color => {
                         res.status(200).send({message: 'color deleted'})

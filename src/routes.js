@@ -13,6 +13,7 @@ const cardTypeController = require('./controllers/cardTypeController')
 const cardController = require('./controllers/cardController')
 const collectionController = require('./controllers/collectionController')
 const uploadController = require('./controllers/uploadsController')
+const logsController = require('./controllers/logsController')
 
 
 // Middlewares
@@ -148,6 +149,10 @@ routes.delete('/collections/:id', Authorization, collectionController.Delete)
 //Rotas relacionadas a uploads
 
 routes.post('/upload', fileUpload.single('img'), resizeFile, uploadController.store)
+
+//Rotas relacionadas a logs
+
+routes.get('/logs',Authorization, logsController.index)
 
 
 module.exports = routes

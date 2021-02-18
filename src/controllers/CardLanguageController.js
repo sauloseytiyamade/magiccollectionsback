@@ -40,6 +40,16 @@ module.exports = {
                 if(language.length == 0){
                     //Caso não exista cria o registro
                     database.insert(body).into('cardlanguage').then(language => {
+                        //Grava log
+                        const objLog = {
+                            user: user.mail,
+                            logType: 'Create',
+                            lineTableId: parseInt(language[0]),
+                            tableName: 'cardLanguage',
+                            lastValue: JSON.stringify(body),
+                            dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        database.insert(objLog).into('logs').then()
                         res.status(201).send({message: 'language created', id: language[0]})
                     }).catch(err => {
                         res.status(400).send(err)
@@ -77,6 +87,18 @@ module.exports = {
                     database.select('language').where({language: body.language}).table('cardlanguage').then(language =>{
                         //Verifica se existe algum registro com este nome
                         if(language.length == 0){
+                            // Grava log
+                            database.select().where({id}).table('cardlanguage').then(card => {
+                                const objLog = {
+                                    user: user.mail,
+                                    logType: 'Update',
+                                    lineTableId: parseInt(card[0].id),
+                                    tableName: 'cardLanguage',
+                                    lastValue: JSON.stringify(card[0]),
+                                    dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                                }
+                                database.insert(objLog).into('logs').then()
+                            })
                             //Caso não exista atualiza o registros
                             database.where({id}).update(body).table('cardlanguage').then(language => {
                                 res.status(200).send({message: 'language updated'})
@@ -114,7 +136,19 @@ module.exports = {
                 if(language.length == 0){
                     res.status(404).send({message: 'language id not exist'})
                 }else{
-                //Caso exista deleta o registro no banco de dados utilizando o id
+                     // Grava log
+                     database.select().where({id}).table('cardlanguage').then(card => {
+                        const objLog = {
+                            user: user.mail,
+                            logType: 'Delete',
+                            lineTableId: parseInt(card[0].id),
+                            tableName: 'cardLanguage',
+                            lastValue: JSON.stringify(card[0]),
+                            dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        database.insert(objLog).into('logs').then()
+                    })
+                    //Caso exista deleta o registro no banco de dados utilizando o id
                     database.where({id}).delete().table('cardlanguage').then(language => {
                         res.status(200).send({message: 'language deleted'})
                     }).catch(err => {

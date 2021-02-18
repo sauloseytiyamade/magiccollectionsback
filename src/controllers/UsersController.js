@@ -3,6 +3,7 @@ const moment = require('moment')
 const cryptpass = require('../utils/cryptpass')
 const validator = require('validator')
 const querysDatabase = require('../utils/querysDatabase')
+const jwt = require('jsonwebtoken')
 
 module.exports = {
 
@@ -82,6 +83,10 @@ module.exports = {
         body['updated_at'] = moment().format('YYYY-MM-DD hh:mm:ss')
         const { email } = req.params
 
+        const authorizationCode = req.headers.authorization
+        const token = authorizationCode.split(' ')[1]
+        const user = jwt.decode(token)
+
         // valida e-mail
         if(validator.isEmail(email)){
 
@@ -91,6 +96,18 @@ module.exports = {
                     if(resp.length == 0){
                         res.status(404).send({message: 'invalid email'})
                     }else{
+                        // Grava log
+                        database.select().where({email}).table('users').then(users => {
+                            const objLog = {
+                                user: user.mail,
+                                logType: 'Update',
+                                lineTableId: parseInt(users[0].id),
+                                tableName: 'users',
+                                lastValue: JSON.stringify(users[0]),
+                                dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                            }
+                            database.insert(objLog).into('logs').then(resp => console.log(resp))
+                        })
                         database.where({email}).update(body).table('users').then(data => {
                             res.status(200).send({message: 'user updated'})
                         }).catch(err => {
@@ -106,6 +123,10 @@ module.exports = {
 
     Delete(req, res){
         const {email} = req.params
+
+        const authorizationCode = req.headers.authorization
+        const token = authorizationCode.split(' ')[1]
+        const user = jwt.decode(token)
 
         // valida e-mail
         if(validator.isEmail(email)){
@@ -125,6 +146,18 @@ module.exports = {
                                     database.where({id: card.id}).delete().table('collection').then(data => {
                                         //Caso a exclusão dê certo, é necessário excluir o usuário
                                         if(data == 1){
+                                                // Grava log
+                                                database.select().where({email}).table('users').then(users => {
+                                                    const objLog = {
+                                                        user: user.mail,
+                                                        logType: 'Delete',
+                                                        lineTableId: parseInt(users[0].id),
+                                                        tableName: 'users',
+                                                        lastValue: JSON.stringify(users[0]),
+                                                        dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                                                    }
+                                                    database.insert(objLog).into('logs').then(resp => console.log(resp))
+                                                })
                                             //Exclusão do usuário
                                             database.where({email}).delete().table('users').then(data => {
                                                 res.status(200).send({message: 'user deleted'})
@@ -140,6 +173,18 @@ module.exports = {
                                     })
                                 })
                             }else{
+                                // Grava log
+                                database.select().where({email}).table('users').then(users => {
+                                    const objLog = {
+                                        user: user.mail,
+                                        logType: 'Delete',
+                                        lineTableId: parseInt(users[0].id),
+                                        tableName: 'users',
+                                        lastValue: JSON.stringify(users[0]),
+                                        dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                                    }
+                                    database.insert(objLog).into('logs').then(resp => console.log(resp))
+                                })
                                 //Caso não haja nenhum card é só excluir o usuário vinculado
                                 database.where({email}).delete().table('users').then(data => {
                                     res.status(200).send({message: 'user deleted'})

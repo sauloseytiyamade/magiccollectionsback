@@ -40,6 +40,16 @@ module.exports = {
                 if(type.length == 0){
                     //Caso não exista cria o registro
                     database.insert(body).into('cardtype').then(type => {
+                        //Grava log
+                        const objLog = {
+                            user: user.mail,
+                            logType: 'Create',
+                            lineTableId: parseInt(type[0]),
+                            tableName: 'cardType',
+                            lastValue: JSON.stringify(body),
+                            dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        database.insert(objLog).into('logs').then()
                         res.status(201).send({message: 'type created', id: type[0]})
                     }).catch(err => {
                         res.status(400).send(err)
@@ -77,6 +87,18 @@ module.exports = {
                     database.select('type').where({type: body.type}).table('cardtype').then(type =>{
                         //Verifica se existe algum registro com este nome
                         if(type.length == 0){
+                            // Grava log
+                            database.select().where({id}).table('cardtype').then(card => {
+                                const objLog = {
+                                    user: user.mail,
+                                    logType: 'Update',
+                                    lineTableId: parseInt(card[0].id),
+                                    tableName: 'cardType',
+                                    lastValue: JSON.stringify(card[0]),
+                                    dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                                }
+                                database.insert(objLog).into('logs').then()
+                            })
                             //Caso não exista atualiza o registros
                             database.where({id}).update(body).table('cardtype').then(type => {
                                 res.status(200).send({message: 'type updated'})
@@ -114,7 +136,19 @@ module.exports = {
                 if(type.length == 0){
                     res.status(404).send({message: 'type id not exist'})
                 }else{
-                //Caso exista deleta o registro no banco de dados utilizando o id
+                    // Grava log
+                    database.select().where({id}).table('cardtype').then(card => {
+                        const objLog = {
+                            user: user.mail,
+                            logType: 'Delete',
+                            lineTableId: parseInt(card[0].id),
+                            tableName: 'cardType',
+                            lastValue: JSON.stringify(card[0]),
+                            dateTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                        }
+                        database.insert(objLog).into('logs').then()
+                    })
+                    //Caso exista deleta o registro no banco de dados utilizando o id
                     database.where({id}).delete().table('cardtype').then(type => {
                         res.status(200).send({message: 'type deleted'})
                     }).catch(err => {
