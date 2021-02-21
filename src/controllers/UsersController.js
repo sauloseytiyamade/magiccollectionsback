@@ -48,7 +48,7 @@ module.exports = {
 
         // valida e-mail
         if(validator.isEmail(body.email)){
-            
+            // Encripta o password utilizando bcrypt
             cryptpass.encript(body.password)
             .then(resp =>{ 
     
@@ -74,8 +74,6 @@ module.exports = {
         }else{
             res.status(404).send({message: 'invalid email'})
         }
-
-        // Encripta o password utilizando bcrypt
     },
 
     Update(req, res){

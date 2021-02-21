@@ -14,6 +14,7 @@ const cardController = require('./controllers/cardController')
 const collectionController = require('./controllers/collectionController')
 const uploadController = require('./controllers/uploadsController')
 const logsController = require('./controllers/logsController')
+const forgotPassController = require('./controllers/forgotPassController')
 
 
 // Middlewares
@@ -153,6 +154,10 @@ routes.post('/upload', fileUpload.single('img'), resizeFile, uploadController.st
 //Rotas relacionadas a logs
 
 routes.get('/logs',Authorization, logsController.index)
+
+//Rotas relacionadas a esqueci a senha
+routes.post('/forgot', forgotPassController.forgot)
+routes.post('/reset', forgotPassController.reset)
 
 
 module.exports = routes
