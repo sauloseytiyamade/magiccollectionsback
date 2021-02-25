@@ -48,28 +48,32 @@ module.exports = {
 
         // valida e-mail
         if(validator.isEmail(body.email)){
-            // Encripta o password utilizando bcrypt
-            cryptpass.encript(body.password)
-            .then(resp =>{ 
-    
-                body['password'] = resp
-    
-                // Utiliza a função de verificar se existe usuário na base de dados
+            if(body.password.length >= 6){
+                // Encripta o password utilizando bcrypt
+                cryptpass.encript(body.password)
+                .then(resp =>{ 
         
-                querysDatabase.verifyEmail(body.email, 'users')
-                    .then(resp => {
-                        if(resp.length >= 1){
-                            res.status(409).send({message: 'user exist'})
-                        }else{
-                            database.insert(body).into('users').then(data => {
-                                res.status(201).send({message: 'user created', id: data[0]})
-                            }).catch(err => {
-                                res.status(400).send(err)
-                            })
-                        }
-                    })
-                
-            })
+                    body['password'] = resp
+        
+                    // Utiliza a função de verificar se existe usuário na base de dados
+            
+                    querysDatabase.verifyEmail(body.email, 'users')
+                        .then(resp => {
+                            if(resp.length >= 1){
+                                res.status(409).send({message: 'user exist'})
+                            }else{
+                                database.insert(body).into('users').then(data => {
+                                    res.status(201).send({message: 'user created', id: data[0]})
+                                }).catch(err => {
+                                    res.status(400).send(err)
+                                })
+                            }
+                        })
+                    
+                })
+            }else{
+                res.status(400).send({message: 'password not strength'})
+            }
 
         }else{
             res.status(404).send({message: 'invalid email'})
