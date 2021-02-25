@@ -16,8 +16,10 @@ app.use(cors())
 // Usado para logger
 app.use(morgan('combined'))
 
+//Chama o arquivo de rotas da aplicação
 app.use(routes)
 
+//Inicia o servidor na porta fornecida
 app.listen(PORT, () => {
     console.log(`server running ${PORT}`)
 })

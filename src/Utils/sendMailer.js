@@ -3,6 +3,7 @@ require('dotenv/config')
 
 module.exports = {
     send(mailTo, nameUser, uuid){
+        // Monta o transporte do e-mail
         const transporter = nodemailer.createTransport({
             host: "smtp.mailtrap.io",
             port: process.env.EMAIL_PORT,
@@ -12,6 +13,7 @@ module.exports = {
             }
         })
 
+        // Cria a mensagem que será enviada para o usuário
         const templateHTML = `
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml">
@@ -169,6 +171,7 @@ module.exports = {
         </html>        
         `
 
+        // Envia a mensagem utilizando os dados enviados pelo frontend
         const info = transporter.sendMail({
             from: 'sauloseytiyamade@gmail.com', // sender address
             to: `${mailTo}`, // list of receivers

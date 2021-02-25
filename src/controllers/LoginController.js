@@ -55,6 +55,7 @@ module.exports = {
                     }
                 })
         }else{
+            //Caso não seja um email válido ele apresenta essa mensagem
             res.status(404).send({message: 'invalid email'})
         }
         

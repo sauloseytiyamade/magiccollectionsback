@@ -2,7 +2,7 @@ const sharp = require('sharp')
 const path = require('path')
 const fs = require('fs')
 
-
+//Diminui a foto para 89px/93px
 const resizeFile = (req, res, next) => {
     if(req.file){
         const { filename: image } = req.file
