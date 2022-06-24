@@ -4,7 +4,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
-const PORT = process.env.APP_PORT
+const PORT = process.env.APP_PORT || 3000
 
 // Acesso ao arquivo de rotas
 const routes = require('./routes')
@@ -23,4 +23,3 @@ app.use(routes)
 app.listen(PORT, () => {
     console.log(`server running ${PORT}`)
 })
-
